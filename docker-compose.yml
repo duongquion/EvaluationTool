@@ -3,32 +3,32 @@ version: '3.8'
 services:
   db:
     image: postgres:15
-    container_name: postgres_db
     restart: always
+    env_file:
+      - .env
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
-  web:
+  backend:
     build: ./backend
-    container_name: django_app
     restart: always
-    volumes:
-      - ./backend:/backend
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
     env_file:
       - .env
-    command: >
-      sh -c "python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
+      - ./backend/.env
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/config/
+    ports:
+      - "8001:8000"
+    environment:
+      - DEBUG=1
 
 volumes:
   postgres_data:
