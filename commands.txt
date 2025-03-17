@@ -1,0 +1,51 @@
+# ------------------COMMAND CƠ BẢN------------------ #
+# Kiểm tra phiên bản Docker
+docker --version
+
+# Chạy container Docker
+docker-compose up -d
+
+# Xem danh sách container đang chạy
+docker ps
+
+# Xem danh sách tất cả các container
+docker ps -a
+
+# Xem danh sách image Docker
+docker images
+
+# Xem danh sách volume Docker
+docker volume ls
+
+# Xem danh sách network Docker
+docker network ls
+
+# ---------------LÀM VIỆC VỚI CONTAINER------------- #
+
+# Chạy tất cả container trong "docker-compose.yml"
+docker-compose up -d
+
+# Dừng tất cả container trong "docker-compose.yml"
+docker-compose down
+
+# Xây dựng lại container khi thay đổi Dockerfile hoặc docker-compose.yml
+docker-compose up --build -d
+* Nếu có chỉnh sửa gì cần down và build lại từ đầu!
+
+# Chạy container từ image
+docker run -d --name my_container -p 8000:8000 my_image
+
+# Truy cập vào container backend
+docker exec -it evaluation_tool-backend-1 bash
+
+# ------------------------------------------ #
+
+# Truy cập vào PostgreSQL bên trong container
+docker exec -it evaluation_tool-db-1 psql -U your_db_user -d your_db_name
+
+# Chạy migrations trong Django
+python manage.py makemigrations
+python manage.py migrate
+
+# Kiểm tra danh sách bảng trong PostgreSQL
+\dt
