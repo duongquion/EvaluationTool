@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -74,7 +76,6 @@ WSGI_APPLICATION = 'configs.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 import environ
-# ád
 env = environ.Env()
 environ.Env.read_env(env_file=".env")
 
@@ -88,6 +89,7 @@ DATABASES = {
         "PORT": env("DB_PORT"),
     }
 }
+AUTH_USER_MODEL = 'users.CustomUser'
 
 
 # Password validation

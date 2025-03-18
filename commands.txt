@@ -38,11 +38,20 @@ docker run -d --name my_container -p 8000:8000 my_image
 # Truy cập vào container backend
 docker exec -it evaluation_tool-backend-1 bash
 
-# ------------------------------------------ #
+# --------LÀM VIỆC VỚI POSTGRE SQL Ở CONTAINER--------- #
+
+# Mở DBShell ở container
+docker manage.py dbshell
+* (Muốn thoát khỏi DBShell dùng câu lệnh "\q")
+
+# Câu lệnh xóa toàn bộ migrations
+find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+find . -path "*/migrations/*.pyc" -delete
 
 # Truy cập vào PostgreSQL bên trong container
 docker exec -it evaluation_tool-db-1 psql -U your_db_user -d your_db_name
 
+# ------------------------------------------ #
 # Chạy migrations trong Django
 python manage.py makemigrations
 python manage.py migrate
