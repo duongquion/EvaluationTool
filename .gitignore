@@ -1,0 +1,63 @@
+# SYSTEM & EDITOR FILES
+.DS_Store
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# PYTHON (Nếu bạn vẫn dùng Django)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.py[cod]
+*.so
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+db.sqlite3
+db.sqlite3-journal
+*.log
+local_settings.py
+.mypy_cache/
+.pytest_cache/
+.pytype/
+
+# DOTNET CORE
+bin/
+obj/
+*.user
+*.vs/
+*.vscode/
+out/
+Properties/launchSettings.json
+
+# ASP.NET Core Configuration
+appsettings.json
+appsettings.*.json
+
+# NODE.JS / REACT (Nếu có frontend)
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# DOCKER
+.dockerignore
+**/docker-compose.override.yml
+**/docker-compose.dev.yml
+**/docker-compose.prod.yml
+**/.docker/
+**/logs/
+**/tmp/

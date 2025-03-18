@@ -24,7 +24,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./backend:/config/
+      - ./backend:/backend
     ports:
       - "8001:8000"
     environment:
