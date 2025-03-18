@@ -74,7 +74,7 @@ WSGI_APPLICATION = 'configs.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 import environ
-
+# ád
 env = environ.Env()
 environ.Env.read_env(env_file=".env")
 
