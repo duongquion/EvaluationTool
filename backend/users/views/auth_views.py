@@ -2,9 +2,11 @@ from django.http import JsonResponse
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
+from rest_framework_simplejwt.tokens import RefreshToken
 from ..serializers import (
     ChangePasswordSerializer,
     SetPasswordSerializer,
+    LoginSerializer,
 )
 from ..models import (
     CustomUser as User,
@@ -102,6 +104,50 @@ def set_password(request):
             "message": ErrorMessage.INCORRECT_USERNAME_PASSWORD
             }, status=status.HTTP_404_NOT_FOUND)
    
+    except Exception as e:
+        return JsonResponse({'message': str(e)},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+@csrf_exempt
+@api_view(['POST'])
+def login(request):
+    try:
+        serializer = LoginSerializer(data=request.data)
+       
+        if not serializer.is_valid():
+            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+           
+        user = User.objects.get(username = serializer.validated_data['username'])
+        if not user.is_active:
+            return JsonResponse({
+                "id": "username",
+                "message": ErrorMessage.USER_NOT_ALLOWED
+            }, status = status.HTTP_403_FORBIDDEN)
+            
+        if not user.check_password(serializer.validated_data['password']):
+            return JsonResponse({
+                "id": "password",
+                "message": ErrorMessage.INCORRECT_USERNAME_PASSWORD
+                }, status=status.HTTP_404_NOT_FOUND)
+           
+        if user.is_default_password:
+            return JsonResponse({
+                "set_password": True,
+                }, status = status.HTTP_301_MOVED_PERMANENTLY)
+           
+        refresh = RefreshToken.for_user(user)
+        return JsonResponse({'refresh': str(refresh),
+                             'access': str(refresh.access_token),
+                             "message": SuccessMessage.LOGIN_SUCCESSFULLY
+                            },
+                            status=status.HTTP_200_OK)
+ 
+    except User.DoesNotExist:
+        return JsonResponse({
+            "id": "username",
+            "message": ErrorMessage.INCORRECT_USERNAME_PASSWORD
+            }, status=status.HTTP_404_NOT_FOUND)
+       
     except Exception as e:
         return JsonResponse({'message': str(e)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)

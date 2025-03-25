@@ -16,3 +16,7 @@ class SetPasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(validators=[check_format_password])
     question = serializers.CharField(max_length=150) 
     answer = serializers.CharField(max_length=150)
+    
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150)
+    password = serializers.CharField(write_only=True)
