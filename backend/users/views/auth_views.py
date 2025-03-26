@@ -7,6 +7,7 @@ from ..serializers import (
     ChangePasswordSerializer,
     SetPasswordSerializer,
     LoginSerializer,
+    ForgotPasswordSerializer,
 )
 from ..models import (
     CustomUser as User,
@@ -148,6 +149,82 @@ def login(request):
             "message": ErrorMessage.INCORRECT_USERNAME_PASSWORD
             }, status=status.HTTP_404_NOT_FOUND)
        
+    except Exception as e:
+        return JsonResponse({'message': str(e)},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+@csrf_exempt
+@api_view(['GET'])
+def get_question(request, username):
+    try:
+        user = User.objects.get(username=username)
+ 
+        if not user.is_active:
+            return JsonResponse({
+                "id": "username",
+                "message": ErrorMessage.USER_NOT_ALLOWED
+            }, status = status.HTTP_403_FORBIDDEN)
+           
+        if user.is_default_password:
+            return JsonResponse({
+                "id" : "password",
+                "message" : ErrorMessage.USER_NOT_ALLOWED
+            }, status = status.HTTP_403_FORBIDDEN)
+            
+        question = user.question
+        return JsonResponse({
+            "question": question
+        }, status=status.HTTP_200_OK)
+ 
+    except User.DoesNotExist:
+        return JsonResponse({
+            "id": "username",
+            "message": ErrorMessage.INCORRECT_USERNAME_PASSWORD
+            }, status=status.HTTP_404_NOT_FOUND)
+   
+    except Exception as e:
+        return JsonResponse({'message': str(e)},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+ 
+@csrf_exempt
+@api_view(['POST'])
+def forgot_password(request):
+    try:
+        serializer = ForgotPasswordSerializer(data=request.data)
+ 
+        if not serializer.is_valid():  
+            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)      
+           
+        user = User.objects.get(username = serializer.validated_data['username'])    
+        if not user.is_active:
+            return JsonResponse({
+                "id": "username",
+                "message": ErrorMessage.USER_NOT_ALLOWED
+            }, status = status.HTTP_403_FORBIDDEN)
+       
+        if user.is_default_password:
+            return JsonResponse({
+                "message": ErrorMessage.USER_NOT_ALLOWED
+            },status = status.HTTP_403_FORBIDDEN)
+       
+        current_answer = user.answer
+        if current_answer != serializer.validated_data['answer']:
+            return JsonResponse({
+                "message": ErrorMessage.THE_ANSWER_DOES_NOT_MATCH
+            }, status=status.HTTP_400_BAD_REQUEST)
+ 
+        user.set_password(serializer.validated_data['new_password'])
+        user.save()
+        return JsonResponse({
+            "message": SuccessMessage.RESET_PASSWORD_SUCCESSFULLY
+        }, status=status.HTTP_200_OK)
+ 
+    except User.DoesNotExist:
+        return JsonResponse({
+            "id": "username",
+            "message": ErrorMessage.INCORRECT_USERNAME_PASSWORD
+            }, status=status.HTTP_404_NOT_FOUND)
+   
     except Exception as e:
         return JsonResponse({'message': str(e)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
