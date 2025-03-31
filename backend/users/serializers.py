@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from users.models import (
     CustomUser as User,
-
+    Team,
 )
 from .utils import check_format_password
 
@@ -25,3 +25,16 @@ class ForgotPasswordSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=150)
     new_password = serializers.CharField(validators=[check_format_password])
     answer = serializers.CharField(max_length=150)
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username']
+    
+class TeamSerializer(serializers.ModelSerializer):
+    parent_team = serializers.StringRelatedField()
+    created_user = UserSerializer()
+ 
+    class Meta:
+        model = Team
+        fields = ['id', 'name', 'parent_team', 'is_active', 'created_user', 'created_at']

@@ -74,11 +74,11 @@ class Team(UserTrackable, TimeStamped):
     
 class Employee(UserTrackable, TimeStamped):
     class RoleNameEnum(models.TextChoices):
-        PM = 'PM', 'Project Manager'
-        SM = 'SM', 'Scrum Master'
-        TL = 'TL', 'Team Lead'
-        DEV = 'DEV', 'Developer'
-        TEST = 'TEST', 'Tester'
+        PM = 'Project Manager', 'PM'
+        SM = 'Scrum Master', 'SM' 
+        TL = 'Team Lead', 'TL'
+        DEV = 'Developer', 'DEV'
+        TEST = 'Tester', 'TEST' 
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name=_('user'))
     access_level = models.ForeignKey(CustomUserPermission, on_delete=models.CASCADE, verbose_name=_('access level'))

@@ -1,10 +1,22 @@
+from django.contrib import messages
+from django.utils.timezone import now
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.crypto import get_random_string
+from .forms import (
+    CustomUserCreationForm
+)
+
 from .models import (
     CustomUser,
+    Team,
+    CustomUserPermission,
+    Employee,
 )
-from .forms import CustomUserCreationForm
+
+from .containts import (
+    AlertMessage,
+)
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
@@ -74,4 +86,71 @@ class CustomUserAdmin(UserAdmin):
  
         obj.save()
         
+class CustomUserPermissionAdmin(admin.ModelAdmin):
+    model = CustomUserPermission
+    list_display = (
+        'access_level',
+        'can_read_eval_data',
+        'can_read_eval_settings',
+        'can_read_criteria_settings',
+        'can_export',
+    )
+    list_filter = (
+        'access_level',
+        'can_write_eval_data',
+        'can_write_eval_settings',
+        'can_write_criteria_settings',
+    )
+    search_fields = ('access_level',)
+    ordering = ('id',)
+ 
+class EmployeeAdmin(admin.ModelAdmin):
+    model = Employee
+    list_display = (
+        'user',
+        'access_level',
+        'team',
+        'role',
+        'is_active',
+        'created_at',
+        'updated_user',
+    )
+    list_filter = (
+        'role',
+        'team',
+    )
+    ordering = ('id', )
+    
+    def save_model(self, request, obj, form, change):
+        if not change:
+            last_employee = Employee.objects.filter(user=obj.user).order_by('-created_at').first()
+            if last_employee:
+                days_difference = now().month - last_employee.created_at.month
+                print(days_difference)
+                if days_difference < 3:
+                    self.message_user(
+                        request,
+                        AlertMessage.UNSUCCESS_FOR_ADD_NEW_EMPLOYEE,
+                        level=messages.ERROR
+                    )
+                    return
+        super().save_model(request, obj, form, change)
+ 
+class TeamAdmin(admin.ModelAdmin):
+    model = Team
+    list_display = (
+        "name",
+        "parent_team",
+        "is_active",
+        "updated_at",
+        "updated_user",
+    )
+    list_filter = (
+        "is_active",
+    )
+    ordering = ('id', )
+        
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Team, TeamAdmin )
+admin.site.register(CustomUserPermission, CustomUserPermissionAdmin)
+admin.site.register(Employee, EmployeeAdmin)
