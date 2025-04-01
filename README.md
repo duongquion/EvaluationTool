@@ -2,6 +2,7 @@
 The project is a tool used to calculate the scores of employees working in a department and report the results to people with high authority.
 ## Why I do?
 Project is a system that I use to learn and explore new technologies like GIT, Scrum team, Docker, and a few other tools.
+
 Ps: The project is a complete and upgraded version of the project I interned on before.
 ## How to run?
 I have designed and you can run it easily using Docker. (But before you run it I recommend you download some environments).
