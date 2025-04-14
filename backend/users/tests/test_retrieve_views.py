@@ -54,7 +54,6 @@ class RetrieveTeamTest(TestCase):
         self.client.force_authenticate(user=self.user)
         
         response=self.client.get(self.url)
-        print(response.status_code, response.json())
         
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.json()["message"], "User is not part of any team")
