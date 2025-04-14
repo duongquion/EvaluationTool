@@ -24,8 +24,6 @@ class InputTypeAdmin(admin.ModelAdmin):
     def display_max(self, obj):
         return '+∞' if obj.max is None else obj.max
     display_max.short_description = 'Max'
-        
-
 
 class CriteriaVersionAdmin(admin.ModelAdmin):
     
@@ -33,16 +31,26 @@ class CriteriaVersionAdmin(admin.ModelAdmin):
         'version_name', 
         'role_name', 
         'state', 
-        'updated_at', 
-        'updated_user'
+        'created_at', 
+        'created_user'
     )
-    fieldsets = (
-        ('Create the version', {'fields': ('version_name',)}),
-        ('Choose the role and state', {'fields': ('role_name','state')})
-    )
-    
+
     list_filter = ('role_name', 'state', )
     search_fields = ('version_name', 'role_name', )
+    
+    def get_fieldsets(self, request, obj=None):
+        if obj is None:
+            return (
+                ('Made by', {'fields': ('created_user',)}), 
+                ('Create the version', {'fields': ('version_name',)}),
+                ('Choose the role and state', {'fields': ('role_name','state')}),
+            )
+        else:
+            return (
+                ('Last updated by', {'fields': ('updated_user',)}),
+                ('Edit the version', {'fields': ('version_name',)}),
+                ('Edit role and state', {'fields': ('role_name','state')}),
+            )
 
 class CriteriaAdmin(admin.ModelAdmin):
     
