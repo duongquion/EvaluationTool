@@ -32,7 +32,8 @@ class CriteriaVersionAdmin(admin.ModelAdmin):
         'role_name', 
         'state', 
         'created_at', 
-        'created_user'
+        'created_user',
+        'updated_user',
     )
 
     list_filter = ('role_name', 'state', )

@@ -16,6 +16,8 @@ class CriteriaVersionSerializer(serializers.ModelSerializer):
         choices=CriteriaRoleEnum.choices,
         required=False
     )
+    created_user=serializers.UUIDField(read_only=True)
+    updated_user=serializers.UUIDField(read_only=True)
     
     class Meta:
         model = CriteriaVersion
@@ -29,4 +31,5 @@ class CriteriaVersionSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     CriteriaVersionMessage.ONLY_ONE_FIELD_CAN_BE_UPDATED
                 )
+            
         return data

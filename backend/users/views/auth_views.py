@@ -12,7 +12,7 @@ from ..serializers import (
 from ..models import (
     CustomUser as User,
 )
-from ..containts import (
+from ..constants import (
     SuccessMessage,
     ErrorMessage,
 )
